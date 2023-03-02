@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Embed\Timestamp;
 use App\Enums\Gender;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,9 +44,13 @@ class Author
         public Gender $gender,
 
         /**
-         * @ORM\OneToMany(targetEntity="\App\Entities\Specialization", mappedBy="authors", cascade={ "persist" })
+         * @ORM\JoinTable(name="authors_specializations",
+         *          joinColumns={ @ORM\JoinColumn(name="author_id", referencedColumnName="id") },
+         *          inverseJoinColumns={ @ORM\JoinColumn(name="specialization_id", referencedColumnName="id") }
+         *      )
+         * @ORM\ManyToMany(targetEntity="\App\Entities\Specialization", cascade={ "persist" })
          */
-        public ?Collection $specializations = null,
+        public ?Collection $specializations = new ArrayCollection(),
 
         /**
          * @ORM\Column(type="boolean", options={ "default": true })
@@ -54,9 +59,16 @@ class Author
         /**
          * @ORM\Embedded(class="\App\Embed\Timestamp", columnPrefix=false)
          */
-        private ?Timestamp $timestamp = null
+        private ?Timestamp $timestamp = new Timestamp()
 
-    ) {
-        $this->timestamp = new Timestamp();
-    }
+    ) { }
+
+    /**
+     * @return Author
+     */
+    public function addSpecialization(Specialization $specialization): Author
+    {
+        $this->specializations->add($specialization);
+        return $this;
+    } 
 }

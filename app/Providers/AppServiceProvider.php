@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        Sanctum::ignoreMigrations();
+        $this->handleLocalDependencies();
     }
 
     /**
@@ -24,5 +26,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+    }
+
+    private function handleLocalDependencies()
+    {
+        if ($this->app->environment('local')) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 }

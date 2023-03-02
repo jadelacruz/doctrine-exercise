@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use DateTime;
 use App\Embed\Timestamp;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -45,7 +46,7 @@ class Article
         /**
          * @ORM\OneToMany(targetEntity="\App\Entities\Keyword", mappedBy="articles", cascade={ "persist" })
          */
-        public ?Collection $keywords = null,
+        public ?Collection $keywords = new ArrayCollection(),
 
         /**
          * @ORM\Column(nullable=true, options={ "default": null })
@@ -55,9 +56,7 @@ class Article
         /**
          * @ORM\Embedded(class="\App\Embed\Timestamp", columnPrefix=false)
          */
-        public ?Timestamp $timestamp = null
+        public ?Timestamp $timestamp = new Timestamp()
 
-    ) {
-        $this->timestamp = new Timestamp();
-     }
+    ) { }
 }

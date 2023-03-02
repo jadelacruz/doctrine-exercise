@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Embed\Timestamp;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,7 +23,7 @@ class Keyword
     public function __construct(
 
         /**
-         * @ORM\Column(length=25)
+         * @ORM\Column(length=25, unique=true)
          */
         public string $name,
 
@@ -30,14 +31,12 @@ class Keyword
          * @ORM\ManyToMany(targetEntity="\App\Entities\Article", inversedBy="keywords", cascade={ "persist" })
          * @ORM\JoinTable(name="article_keyword")
          */
-        public ?Collection $articles = null,
+        public ?Collection $articles = new ArrayCollection(),
 
         /**
          * @ORM\Embedded(class="\App\Embed\Timestamp", columnPrefix=false)
          */
-        public ?Timestamp $timestamp = null,
+        public ?Timestamp $timestamp = new Timestamp(),
 
-    ) {
-        $this->timestamp = new Timestamp();
-    }
+    ) { }
 }
