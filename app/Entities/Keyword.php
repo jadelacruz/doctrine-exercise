@@ -30,7 +30,7 @@ class Keyword
          * @ORM\ManyToMany(targetEntity="\App\Entities\Article", inversedBy="keywords", cascade={ "persist" })
          * @ORM\JoinTable(name="article_keyword")
          */
-        public ?Collection $articles,
+        public ?Collection $articles = null,
 
         /**
          * @ORM\Embedded(class="\App\Embed\Timestamp", columnPrefix=false)
