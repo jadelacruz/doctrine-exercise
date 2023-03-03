@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\AuthorService;
+use Doctrine\ORM\EntityManager;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
 
@@ -16,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Sanctum::ignoreMigrations();
         $this->handleLocalDependencies();
+        
+        $this->app->singleton(AuthorService::class, fn () => new AuthorService($this->app->get(EntityManager::class)));
     }
 
     /**

@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Constants\AppConstant;
 use Illuminate\Support\Carbon;
 
-class TimestampTrait
+trait TimestampTrait
 {
     /**
      * @param string $format
