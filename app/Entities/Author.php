@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Embed\Timestamp;
 use App\Enums\Gender;
+use App\Traits\TimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,6 +15,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Author
 {
+    use TimestampTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="guid")
@@ -70,5 +73,5 @@ class Author
     {
         $this->specializations->add($specialization);
         return $this;
-    } 
+    }
 }

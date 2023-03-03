@@ -3,16 +3,19 @@
 namespace App\Entities;
 
 use App\Embed\Timestamp;
+use App\Traits\TimestampTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repositories\SpecializationRepository")
  * @ORM\Table("specialization")
  */
 class Specialization
 {
+    use TimestampTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column
@@ -35,7 +38,7 @@ class Specialization
         /**
          * @ORM\Embedded(class="\App\Embed\Timestamp", columnPrefix=false)
          */
-        public ?Timestamp $timestamp = new Timestamp()
+        private ?Timestamp $timestamp = new Timestamp()
 
     ) {}
 }
