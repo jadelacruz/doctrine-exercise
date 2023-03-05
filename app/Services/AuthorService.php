@@ -4,6 +4,10 @@ namespace App\Services;
 
 use App\Entities\Author;
 use App\Entities\Specialization;
+use App\Enums\Gender;
+use App\Repositories\AuthorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
 class AuthorService
@@ -15,11 +19,20 @@ class AuthorService
        private EntityManagerInterface $entityManager,
 
        /**
-        * @var \Doctrine\ORM\QueryBuilder|null
+        * @var AuthoRepository|null $authorRepository
         */
-       private ?\Doctrine\ORM\QueryBUilder $qb = null,
+       private ?AuthorRepository $authorRepository = null
+
     ) { 
-        $this->qb = $this->entityManager->createQueryBuilder();
+        $this->authorRepository = $entityManager->getRepository(Author::class);
+    }
+
+    /**
+     * @return array|Authors[]
+     */
+    public function getAllAuthors(): array
+    {
+        return $this->authorRepository->findAll();
     }
 
     /**
@@ -30,8 +43,7 @@ class AuthorService
     public function getAuthorById(string $guid): ?Author
     {
         /** @var Author $author */
-        $author = $this->entityManager
-                       ->find(Author::class, $guid);
+        $author = $this->authorRepository->find($guid);
         
         return $author;
     }
@@ -42,7 +54,7 @@ class AuthorService
      * 
      * @return bool
      */
-    public function createAuthor(Author $author, array $specializations)
+    public function createAuthor(Author $author, array $specializations): bool
     {
         try {
             if (empty($specializations) === false) {
@@ -54,11 +66,36 @@ class AuthorService
             }
             
             $this->entityManager->persist($author);
-            $this->entityManager->flush();
 
             return true;
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @param string $guid
+     * @param array  $updatedInfo
+     * 
+     * @return bool
+     */
+    public function updateAuthor(string $guid, array $updateInfo): bool 
+    {
+        try {
+            /** @var Author $author */
+            $author = $this->authorRepository->find($guid);
+            $author->firstName  = $updateInfo['firstName'];
+            $author->middleName = $updateInfo['middleName'];
+            $author->lastName   = $updateInfo['lastName'];
+            $author->gender     = Gender::from($updateInfo['gender']);
+            $specializations    = $updateInfo['specializations'];
+        } catch (\Exception $e) {
+
+        }
+    }
+
+    private function removeUpdatedSpecialization(array $newSpecializations, Collection $existingSpecializations): ArrayCollection
+    {
+
     }
 }

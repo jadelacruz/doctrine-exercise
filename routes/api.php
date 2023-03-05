@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::controller(AuthorApiController::class)
     ->group(function () {
+        Route::get('authors', 'getAuthors');
         Route::get('author/{guid}', 'getAuthorById');
         Route::post('author', 'createAuthor');
     });

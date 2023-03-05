@@ -7,6 +7,7 @@ use App\Entities\Author;
 use App\Http\Controllers\Controller;
 use App\Renderer\Author\AuthorRenderer;
 use App\Services\AuthorService;
+use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Response;
@@ -26,9 +27,24 @@ class AuthorApiController extends Controller
         /**
          * @var AuthorRenderer $authorRenderer
          */
-        private AuthorRenderer $authorRenderer
+        private AuthorRenderer $authorRenderer,
+
+        /**
+         * @var EntityManager $entityManager
+         */
+        private EntityManagerInterface $entityManager
 
     ) { }
+
+    /**
+     * 
+     */
+    public function getAuthors(): JsonResponse
+    {
+        return Response::json($this->authorRenderer->renderList(
+            $this->authorService->getAllAuthors()
+        ));
+    }
 
     /**
      * @param string $guid
@@ -55,10 +71,17 @@ class AuthorApiController extends Controller
             Request::get('specializations')
         );
         
-       if ($result === false) {
+        $this->entityManager->flush();
+        if ($result === false) {
             throw new \Exception('Creating author gone wrong.');        
-       }
+        }
 
        return Response::json(['message' => 'Author has been created successfully']);
+    }
+
+    public function updateAuthor(): JsonResponse
+    {
+        
+        return Response::json([]);
     }
 }

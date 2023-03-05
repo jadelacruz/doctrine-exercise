@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
-class AuthorRepository
+use Doctrine\ORM\EntityRepository;
+
+class AuthorRepository extends EntityRepository
 {
     
 }
