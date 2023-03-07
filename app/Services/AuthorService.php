@@ -6,7 +6,6 @@ use App\Entities\Author;
 use App\Entities\Specialization;
 use App\Enums\Gender;
 use App\Repositories\AuthorRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -84,18 +83,29 @@ class AuthorService
         try {
             /** @var Author $author */
             $author = $this->authorRepository->find($guid);
+            $this->removeSpecializations($author->specializations);
             $author->firstName  = $updateInfo['firstName'];
             $author->middleName = $updateInfo['middleName'];
             $author->lastName   = $updateInfo['lastName'];
             $author->gender     = Gender::from($updateInfo['gender']);
             $specializations    = $updateInfo['specializations'];
-        } catch (\Exception $e) {
 
+            foreach ($specializations as $specializationName) {
+                $author->addSpecialization(new Specialization($specializationName));
+            }
+
+            $this->entityManager->persist($author);
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
-    private function removeUpdatedSpecialization(array $newSpecializations, Collection $existingSpecializations): ArrayCollection
+    private function removeSpecializations(?Collection $specializations): bool
     {
-
+        /** @var Specialization $specialization */
+        foreach ($specializations as $specialization) {
+            $this->entityManager->remove($specialization);
+        }
     }
 }
